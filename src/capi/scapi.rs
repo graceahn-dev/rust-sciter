@@ -71,15 +71,13 @@ pub struct ISciterAPI
 	pub SciterGraphicsCaps: extern "system" fn (pcaps: LPUINT) -> BOOL,
 	pub SciterSetHomeURL: extern "system" fn (hWndSciter: HWINDOW, baseUrl: LPCWSTR) -> BOOL,
 
-  // #if defined(OSX)
-	#[cfg_attr(not(all(target_os="macos", not(feature = "windowless"))), deprecated(note = "macOS only"))]
+  // Sciter 4.4.4.x (used for Windows XP x86) omitted SciterCreateNSView and SciterCreateWidget
+  // on Windows instead of reserving dummy slots. Use target_os cfg so they are excluded on Windows.
+  #[cfg(all(target_os="macos", not(feature = "windowless")))]
 	pub SciterCreateNSView: extern "system" fn (frame: LPRECT) -> HWINDOW, // returns NSView*
-  // #endif
 
-  // #if defined(LINUX)
-	#[cfg_attr(not(all(target_os="linux", not(feature = "windowless"))), deprecated(note = "Linux only"))]
+  #[cfg(all(target_os="linux", not(feature = "windowless")))]
 	pub SciterCreateWidget: extern "system" fn (frame: LPRECT) -> HWINDOW, // returns GtkWidget
-  // #endif
 
 	#[cfg_attr(feature = "windowless", deprecated(note = "Windowed only"))]
 	pub SciterCreateWindow: extern "system" fn (creationFlags: UINT, frame: LPCRECT, delegate: * const SciterWindowDelegate, delegateParam: LPVOID, parent: HWINDOW) -> HWINDOW,
